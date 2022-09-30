@@ -12,6 +12,11 @@ int main(void)
         printf("number is even\n");
     }
 
+    else if (num % 3 == 0)
+    {
+        printf("numer is not even");
+    }
+
     else
     {
         printf("number is uneven\n");
