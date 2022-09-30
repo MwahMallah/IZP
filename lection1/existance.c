@@ -10,7 +10,7 @@ int main(void)
 
     if (num >= interval_start && num <= interval_end)
     {
-        printf("%d is in the inteval [%d , %d]\n", num, interval_start, interval_end+1);
+        printf("%d is in the inteval [%d , %d]\n", num, interval_start, interval_end);
     }
 
     if (num < interval_start || num > interval_end)
