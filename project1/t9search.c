@@ -19,7 +19,8 @@ int main(int argc, char* argv[])
             fgets(str, 100, stdin);
             printf("%s", str);
         }
-    }
 
+        return 0;
+    }
 
 }
