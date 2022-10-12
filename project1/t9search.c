@@ -30,13 +30,24 @@ int main(int argc, char* argv[])
     char* phone_input = argv[1];
     //finds length of argument
     int length_of_input = strlen(phone_input);
+
     while (fgets(str, MAX_NUMBER_IN_LINE, stdin) != NULL)
     {
         for (int i = 0; i < length_of_input; i++)
         {
-            //converts every char in phone_input to int and stores in index
+
+            //converts char in phone_input to int and stores in index
             int index_of_char = phone_input[i] - '0';
-            printf("%c ",number_to_letter[1][1]);
+
+            for (int j = 0; j < 4; j++)
+            {
+                printf("%c\n", number_to_letter[index_of_char][j]);
+
+                for (int k = 0; k < MAX_NUMBER_IN_LINE; k++)
+                {
+                    printf("%c", str[k]);
+                }
+            }
         }
     }
 }
