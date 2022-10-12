@@ -12,6 +12,8 @@ char number_to_letter[10][4] = {{'+'},{},{'a', 'b', 'c'}, {'d','e','f'}, {'g','h
 
 
 void print_all_contacts(char*);
+//make !!!!!!
+//void check_if_in_line(char*);
 
 int main(int argc, char* argv[])
 {
