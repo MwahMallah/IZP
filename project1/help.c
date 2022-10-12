@@ -1,18 +1,9 @@
 #include <stdio.h>
 
-void IsInSet(int*, int);
-
-int main(void)
+int main()
 {
-    int arr2[] = {1,2,3,4,5};
-    int n = 5;
-    IsInSet(arr2, n);
+    char number_to_letter[2][4]= {{'a','b','c'}, {'d','e','f'}};
+    printf("%c\n", number_to_letter[0][2]);
+
 }
 
-void IsInSet(int arr[], int n)
-{
-    for (int i = 0; i < n; i++)
-    {
-        printf("%i\n", arr[i]);
-    }
-}
