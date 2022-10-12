@@ -17,17 +17,17 @@ int main(void)
 
 int check_array(int array1[], int array2[], int length)
 {
-    int sim = 0;
+    int simillar = 0;
     for (int i = 0; i < length; i++)
     {
         for (int j = 0; j < length; j++)
         {
             if (array1[i] == array2[j])
             {
-                sim++;
+                simillar++;
             }
         }
     }
 
-    return sim;
+    return simillar;
 }
