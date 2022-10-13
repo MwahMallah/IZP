@@ -12,8 +12,8 @@ char number_to_letter[10][4] = {{'+'},{},{'a', 'b', 'c'}, {'d','e','f'}, {'g','h
 
 
 void print_all_contacts(char*);
-//make !!!!!!
-//void check_if_in_line(char*);
+//int check_name(char*, int, char*);
+int check_phone_number(char*, int, char*);
 
 int main(int argc, char* argv[])
 {
@@ -32,41 +32,116 @@ int main(int argc, char* argv[])
     char* phone_input = argv[1];
     //finds length of argument
     int length_of_input = strlen(phone_input);
+    char phone_number[MAX_NUMBER_IN_LINE];
+    int person_counter = 0;
 
-    while (fgets(str, MAX_NUMBER_IN_LINE, stdin) != NULL)
+    //stores names of persons to str variable, untill file is not empty
+    while (fgets(str, MAX_NUMBER_IN_LINE, stdin))
     {
-        for (int i = 0; i < length_of_input; i++)
+        //stores phone number of person to variable
+        fgets(phone_number, MAX_NUMBER_IN_LINE, stdin);
+
+        //checks if phone input is equal to sequence in name
+        //or in phone number
+        /*if ((check_name(phone_input, length_of_input, str) == 0) || (check_phone_number(phone_input, length_of_input, phone_number) == 0))
         {
+            printf("%s %s", str, phone_number);
+            return 0;
+        } */
 
-            //converts char in phone_input to int and stores in index
-            int index_of_char = phone_input[i] - '0';
-
-            for (int j = 0; j < 4; j++)
-            {
-                printf("%c\n", number_to_letter[index_of_char][j]);
-
-                for (int k = 0; k < MAX_NUMBER_IN_LINE; k++)
-                {
-                    printf("%c", str[k]);
-                }
-            }
+        if ((check_phone_number(phone_input, length_of_input, phone_number) == 0))
+        {
+            str[strlen(str) - 1] = '\0';
+            printf("%s, %s", str, phone_number);
+            person_counter++;
         }
     }
+
+    if (person_counter == 0)
+    {
+        printf("Not found\n");
+        return 0;
+    }
+
+    return 0;
 }
 
 
 void print_all_contacts(char str[])
 {
-    
-    //reads line untill there are lines
+    //reads every line untill file is not empty
     while (fgets(str, MAX_NUMBER_IN_LINE, stdin) != NULL)
     {
-        //removes newline character and writes name of person
+        //removes newline character and prints name of person
         str[strlen(str) - 1] = '\0';
         printf("%s, ", str);
 
-        //reads number of person and prints it 
+        //reads phone number of person and prints it 
         fgets(str, 100, stdin);
         printf("%s", str);
     }
 }
+
+int check_phone_number(char* phone_input, int input_length, char* phone_number)
+{
+    int number_length = strlen(phone_number);
+    int flag = 0;
+    int counter = 0;
+    int index_of_phone_number = -1;
+
+    for (int i = 0; i < input_length; i++)
+    {
+        if (flag == 1)
+        {
+            return 1;
+        }
+        flag = 1;
+
+        for (index_of_phone_number = index_of_phone_number+1; index_of_phone_number < number_length; index_of_phone_number++)
+        {
+            if (phone_input[i] == phone_number[index_of_phone_number])
+            {
+                printf ("%c\n", phone_number[index_of_phone_number]);
+                flag = 0;
+                counter++;
+                break;
+            }      
+        }
+    }
+
+    if (counter == 0)
+    {
+        return 1;
+    }
+
+    return 0;
+}
+
+/* int check_name(char* phone_input, int input_length, char* name)
+{
+    int name_length = strlen(name);
+
+    //checks every digit in a phone number
+    for (int i = 0; i < input_length; i++)
+    {
+        int flag = 1;
+
+        //finds index of number to letter array
+        int index = phone_input[i] - '0';
+
+        //checks every character in number to letter array
+        for (int ch = 0; ch < 4; ch++)
+        {
+            for (int j = 0; j < name_length; j++)
+            {
+                if (number_to_letter[index][ch] == name[j])
+                {
+                    flag = 0;
+
+                }
+            }
+        }
+    }
+
+    return 1;
+} */

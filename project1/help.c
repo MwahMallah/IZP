@@ -2,8 +2,11 @@
 
 int main()
 {
-    char number_to_letter[2][4]= {{'a','b','c'}, {'d','e','f'}};
-    printf("%c\n", number_to_letter[0][2]);
+    char num[] = "345";
+    int num_len = strlen(num);
+    char numbers[] = "123456";
+
+    for (int i = 0; i < )
 
 }
 
