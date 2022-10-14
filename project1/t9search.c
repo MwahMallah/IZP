@@ -7,12 +7,12 @@ int MAX_NUMBER_IN_LINE = 100;
 
 //two-dimensional array, which represents number to charachter relationship 
 //2 -> ('a','b','c'), 3 -> ('d','e','f') and so on 
-char number_to_letter[10][4] = {{'+'},{},{'a', 'b', 'c'}, {'d','e','f'}, {'g','h','i'}, {'j','k','l'},{'m','n','o'},{'p','q','r','s'},
+char number_to_letter[10][4] = {{'+'},{},{'a', 'b', 'c'}, {'d','e','f'}, {'g','h','i'}, {'j','k','l'},{'m','o','n'},{'p','q','r','s'},
 {'t','u','v'},{'w','x','y','z'}};
 
 
 void print_all_contacts(char*);
-//int check_name(char*, int, char*);
+int check_name(char*, int, char*);
 int check_phone_number(char*, int, char*);
 
 int main(int argc, char* argv[])
@@ -43,24 +43,19 @@ int main(int argc, char* argv[])
 
         //checks if phone input is equal to sequence in name
         //or in phone number
-        /*if ((check_name(phone_input, length_of_input, str) == 0) || (check_phone_number(phone_input, length_of_input, phone_number) == 0))
+        if ((check_name(phone_input, length_of_input, str) == 0) || (check_phone_number(phone_input, length_of_input, phone_number) == 0))
         {
-            printf("%s %s", str, phone_number);
-            return 0;
-        } */
-
-        if ((check_phone_number(phone_input, length_of_input, phone_number) == 0))
-        {
-            str[strlen(str) - 1] = '\0';
-            printf("%s, %s", str, phone_number);
+            str[strlen(str)-1] = '\0';
             person_counter++;
-        }
+            printf("%s, %s", str, phone_number);
+        } 
+
     }
 
     if (person_counter == 0)
     {
         printf("Not found\n");
-        return 0;
+        return 1;
     }
 
     return 0;
@@ -82,66 +77,77 @@ void print_all_contacts(char str[])
     }
 }
 
+
 int check_phone_number(char* phone_input, int input_length, char* phone_number)
 {
     int number_length = strlen(phone_number);
-    int flag = 0;
-    int counter = 0;
-    int index_of_phone_number = -1;
+    int pass;
+    int j = 0;
 
+    //iterate over every digit in phone input
     for (int i = 0; i < input_length; i++)
     {
-        if (flag == 1)
+        pass = 1;
+        //iterate over every digit in phone number, starting from the digit, where was last equality
+        for (j; j < number_length; j++)
+        {
+            if (phone_input[i] == phone_number[j])
+            {
+                pass = 0;
+                break;
+            }
+        }
+
+        //usage of pass variable to check if this iteration of phone input was successfull 
+        if (pass == 1)
         {
             return 1;
         }
-        flag = 1;
-
-        for (index_of_phone_number = index_of_phone_number+1; index_of_phone_number < number_length; index_of_phone_number++)
-        {
-            if (phone_input[i] == phone_number[index_of_phone_number])
-            {
-                printf ("%c\n", phone_number[index_of_phone_number]);
-                flag = 0;
-                counter++;
-                break;
-            }      
-        }
-    }
-
-    if (counter == 0)
-    {
-        return 1;
     }
 
     return 0;
 }
 
-/* int check_name(char* phone_input, int input_length, char* name)
+ int check_name(char* phone_input, int input_length, char* name)
 {
     int name_length = strlen(name);
+    int pass1, pass2;
+    int j = 0;
 
-    //checks every digit in a phone number
+    //iterate over every digit in phone input
     for (int i = 0; i < input_length; i++)
     {
-        int flag = 1;
-
-        //finds index of number to letter array
-        int index = phone_input[i] - '0';
-
-        //checks every character in number to letter array
-        for (int ch = 0; ch < 4; ch++)
+        int index_to_letter = phone_input[i] - '0';
+        pass1 = 1;
+        pass2 = 1;
+        int k = 0;
+        while (k < 4)
         {
-            for (int j = 0; j < name_length; j++)
+            //iterate over every digit in phone number, starting from the digit, where was last equality
+            for (j; j < name_length; j++)
             {
-                if (number_to_letter[index][ch] == name[j])
+                printf("%i. %c == %c\n", k, number_to_letter[index_to_letter][k], name[j]);
+                if (number_to_letter[index_to_letter][k] == name[j])
                 {
-                    flag = 0;
-
+                    pass1 = 0;
+                    pass2 = 0;
+                    break;
                 }
             }
+
+            if (pass2 == 0)
+            {
+                break;
+            }
+            k++;
+        }
+
+        //usage of pass variable to check if this iteration of phone input was successfull 
+        if (pass1 == 1)
+        {
+            return 1;
         }
     }
 
-    return 1;
-} */
+    return 0;
+} 
