@@ -1,12 +1,28 @@
 #include <stdio.h>
 
+char* check_if(char);
+
 int main()
 {
-    char num[] = "345";
-    int num_len = strlen(num);
-    char numbers[] = "123456";
+    char* arr2 = "help me";
+    char* arr3 = "nadya";
 
-    for (int i = 0; i < )
+    char j = '0';
+    char* i = check_if(j);
 
+    printf("%s", j);
+}
+
+char* check_if(char j)
+{
+    if (j == '0')
+    {
+        return arr2;
+    }
+
+    else 
+    {
+        return "22";
+    }
 }
 

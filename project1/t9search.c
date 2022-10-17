@@ -7,13 +7,14 @@ int MAX_NUMBER_IN_LINE = 100;
 
 //two-dimensional array, which represents number to charachter relationship 
 //2 -> ('a','b','c'), 3 -> ('d','e','f') and so on 
-char number_to_letter[10][4] = {{'+'},{},{'a', 'b', 'c'}, {'d','e','f'}, {'g','h','i'}, {'j','k','l'},{'m','o','n'},{'p','q','r','s'},
+char number_to_letter[10][4] = {{'+'},{},{'a', 'b', 'c'}, {'d','e','f'}, {'g','h','i'}, {'j','k','l'},{'m','n','o'},{'p','q','r','s'},
 {'t','u','v'},{'w','x','y','z'}};
 
 
 void print_all_contacts(char*);
 int check_name(char*, int, char*);
 int check_phone_number(char*, int, char*);
+int check_digit(int, int, char*);
 
 int main(int argc, char* argv[])
 {
@@ -89,7 +90,7 @@ int check_phone_number(char* phone_input, int input_length, char* phone_number)
     {
         pass = 1;
         //iterate over every digit in phone number, starting from the digit, where was last equality
-        for (j; j < number_length; j++)
+        for (j = j+1; j < number_length; j++)
         {
             if (phone_input[i] == phone_number[j])
             {
@@ -104,50 +105,52 @@ int check_phone_number(char* phone_input, int input_length, char* phone_number)
             return 1;
         }
     }
-
     return 0;
 }
 
  int check_name(char* phone_input, int input_length, char* name)
 {
-    int name_length = strlen(name);
-    int pass1, pass2;
-    int j = 0;
+    int starting_point = 0;
 
     //iterate over every digit in phone input
     for (int i = 0; i < input_length; i++)
     {
         int index_to_letter = phone_input[i] - '0';
-        pass1 = 1;
-        pass2 = 1;
-        int k = 0;
-        while (k < 4)
-        {
-            //iterate over every digit in phone number, starting from the digit, where was last equality
-            for (j; j < name_length; j++)
-            {
-                printf("%i. %c == %c\n", k, number_to_letter[index_to_letter][k], name[j]);
-                if (number_to_letter[index_to_letter][k] == name[j])
-                {
-                    pass1 = 0;
-                    pass2 = 0;
-                    break;
-                }
-            }
+        starting_point = check_digit(starting_point, index_to_letter, name);
 
-            if (pass2 == 0)
-            {
-                break;
-            }
-            k++;
+        if (starting_point != 0)
+        {
+            continue;
         }
 
-        //usage of pass variable to check if this iteration of phone input was successfull 
-        if (pass1 == 1)
-        {
-            return 1;
-        }
+        return 1;
     }
 
     return 0;
 } 
+
+int check_digit(int start, int index_to_letter, char* name)
+{
+    int name_length = strlen(name);
+    int pass = 1;
+    int i;
+
+    for (i = start; i < name_length; i++)
+    {
+        for (int k = 0; k < 4; k++)
+        {
+            if (number_to_letter[index_to_letter][k] == name[i])
+            {
+                pass = 0;
+                break;
+            }
+        }
+
+        if (pass == 0)
+        {
+            return i;
+        }
+    }
+
+    return 0;
+}
