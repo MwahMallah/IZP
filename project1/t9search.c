@@ -14,7 +14,7 @@ char number_to_letter[10][4] = {{'+'},{},{'a', 'b', 'c'}, {'d','e','f'}, {'g','h
 void print_all_contacts(char*);
 int check_name(char*, int, char*);
 int check_phone_number(char*, int, char*);
-int check_digit(int, int, char*);
+//int check_digit(int, int, char*);
 
 int main(int argc, char* argv[])
 {
@@ -110,26 +110,45 @@ int check_phone_number(char* phone_input, int input_length, char* phone_number)
 
  int check_name(char* phone_input, int input_length, char* name)
 {
-    int starting_point = 0;
+    int name_length = strlen(name);
+    int pass;
+    int j = 0;
 
     //iterate over every digit in phone input
     for (int i = 0; i < input_length; i++)
     {
+        int pass = 1;
         int index_to_letter = phone_input[i] - '0';
-        starting_point = check_digit(starting_point, index_to_letter, name);
 
-        if (starting_point != 0)
+
+        for (j; j < name_length; j++)
         {
-            continue;
+            for (int k = 0; k < 4; k++)
+            {
+                if (number_to_letter[index_to_letter][k] == name[j])
+                {
+                    pass = 0;
+                    j++;
+                    break;
+                }
+            }
+
+            if (pass == 0)
+            {
+                break;
+            }
         }
 
-        return 1;
+        if (pass == 1)
+        {
+            return 1;
+        }
     }
 
     return 0;
 } 
 
-int check_digit(int start, int index_to_letter, char* name)
+/*int check_digit(int start, int index_to_letter, char* name)
 {
     int name_length = strlen(name);
     int pass = 1;
@@ -153,4 +172,4 @@ int check_digit(int start, int index_to_letter, char* name)
     }
 
     return 0;
-}
+}*/
