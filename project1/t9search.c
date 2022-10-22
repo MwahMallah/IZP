@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 //number of characters in one line
 int MAX_NUMBER_IN_LINE = 100;
@@ -18,13 +19,13 @@ int check_phone_number(char*, int, char*);
 int main(int argc, char* argv[])
 {
     //array of characters in one line of seznam.txt
-    char str[MAX_NUMBER_IN_LINE];
+    char name[MAX_NUMBER_IN_LINE];
 
     // checks if there is no arguments
     if (argc == 1)
     {
         // prints all contacts from the list
-        print_all_contacts(str);
+        print_all_contacts(name);
         return 0;
     }
 
@@ -36,20 +37,20 @@ int main(int argc, char* argv[])
     int person_counter = 0;
 
     //stores names of persons to str variable, untill file is not empty
-    while (fgets(str, MAX_NUMBER_IN_LINE, stdin))
+    while (fgets(name, MAX_NUMBER_IN_LINE, stdin))
     {
         //stores phone number of person to variable
         fgets(phone_number, MAX_NUMBER_IN_LINE, stdin);
 
         //checks if phone input is equal to sequence in name
         //or in phone number
-        if ((check_name(phone_input, length_of_input, str) == 0) || (check_phone_number(phone_input, length_of_input, phone_number) == 0))
+        if ((check_name(phone_input, length_of_input, name) == 0) || (check_phone_number(phone_input, length_of_input, phone_number) == 0))
         {
-            str[strlen(str)-1] = '\0';
+            //deletes newline character from name, to 
+            name[strlen(name)-1] = '\0';
             person_counter++;
-            printf("%s, %s", str, phone_number);
+            printf("%s, %s", name, phone_number);
         } 
-
     }
 
     if (person_counter == 0)
@@ -124,7 +125,7 @@ int check_phone_number(char* phone_input, int input_length, char* phone_number)
         {
             for (int k = 0; k < 4; k++)
             {
-                if (number_to_letter[index_to_letter][k] == name[j])
+                if (number_to_letter[index_to_letter][k] == tolower(name[j]))
                 {
                     pass = 0;
                     j++;
