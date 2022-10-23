@@ -95,7 +95,7 @@ int check_phone_number(char* phone_input, int input_length, char* phone_number)
     {
         //sets variable to unsuccessfull state
         pass = 1;
-        
+
         //iterate over every digit in phone number, starting from the next digit, where was last equality
         for (j= j+1; j < number_length; j++)
         {
@@ -128,11 +128,13 @@ int check_phone_number(char* phone_input, int input_length, char* phone_number)
         int pass = 1;
         int index_to_letter = phone_input[i] - '0';
 
-
+        //iterate over every character in name, starting from the next character, where was last equality
         for (j; j < name_length; j++)
         {
+            //iterate over every character in two-dimensional array
             for (int k = 0; k < 4; k++)
             {
+                //checks if letter from two-dimensional array is equal to lowercased character from name and sets pass variable to successfull state
                 if (number_to_letter[index_to_letter][k] == tolower(name[j]))
                 {
                     pass = 0;
@@ -147,6 +149,7 @@ int check_phone_number(char* phone_input, int input_length, char* phone_number)
             }
         }
 
+        //checks pass variable to check if this iteration of cycle was successfull 
         if (pass == 1)
         {
             return 1;
