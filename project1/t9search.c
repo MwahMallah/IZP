@@ -85,16 +85,21 @@ void print_all_contacts(char str[])
 int check_phone_number(char* phone_input, int input_length, char* phone_number)
 {
     int number_length = strlen(phone_number);
-    int pass;
     int j = -1;
+
+    //variable which indicates success of iteration of the cycle
+    int pass;
 
     //iterate over every digit in phone input
     for (int i = 0; i < input_length; i++)
     {
+        //sets variable to unsuccessfull state
         pass = 1;
-        //iterate over every digit in phone number, starting from the digit, where was last equality
+        
+        //iterate over every digit in phone number, starting from the next digit, where was last equality
         for (j= j+1; j < number_length; j++)
         {
+            //checks if digit from the phone input was equal to digit in phone number and sets pass variable to successfull state
             if (phone_input[i] == phone_number[j])
             {
                 pass = 0;
@@ -102,7 +107,7 @@ int check_phone_number(char* phone_input, int input_length, char* phone_number)
             }
         }
 
-        //usage of pass variable to check if this iteration of phone input was successfull 
+        //checks pass variable to check if this iteration of cycle was successfull 
         if (pass == 1)
         {
             return 1;
