@@ -125,11 +125,11 @@ int check_phone_number(char* phone_input, int input_length, char* phone_number)
     //iterate over every digit in phone input
     for (int i = 0; i < input_length; i++)
     {
-        int pass = 1;
+        pass = 1;
         int index_to_letter = phone_input[i] - '0';
 
         //iterate over every character in name, starting from the next character, where was last equality
-        for (j; j < name_length; j++)
+        for ( ; j < name_length; j++)
         {
             //iterate over every character in two-dimensional array
             for (int k = 0; k < 4; k++)
