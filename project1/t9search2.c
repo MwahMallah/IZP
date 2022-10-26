@@ -13,8 +13,8 @@ char number_to_letter[10][4] = {{'+'},{},{'a', 'b', 'c'}, {'d','e','f'}, {'g','h
 
 
 void print_all_contacts(char*);
-int check_name(char*, int, char*, int);
-int check_phone_number(char*, int, char*, int);
+int check_name(char*, int, char*);
+int check_phone_number(char*, int, char*);
 
 int main(int argc, char* argv[])
 {
@@ -29,24 +29,9 @@ int main(int argc, char* argv[])
         print_all_contacts(name);
         return 0;
     }
-    
-    //indicator of standard behavior of the program
-    int flag = 0;
+
     //stores phone input in a phone_input variable
     char* phone_input = argv[1];
-
-
-    //checks if there are 3 arguments
-    if (argc == 3)
-    {
-        //checks if first argument is "-s"
-        if (strcmp(argv[1], "-s") == 0)
-        {
-            //switches behaviour to searching for cuted sequences of characters
-            flag = 1;
-            phone_input = argv[2];
-        }
-    }
 
     //finds length of phone input
     int length_of_input = strlen(phone_input);
@@ -59,7 +44,7 @@ int main(int argc, char* argv[])
         fgets(phone_number, MAX_NUMBER_IN_LINE, stdin);
 
         //checks if phone input is equal to sequence in name or in phone number
-        if ((check_name(phone_input, length_of_input, name, flag) == 0) || (check_phone_number(phone_input, length_of_input, phone_number, flag) == 0))
+        if ((check_name(phone_input, length_of_input, name) == 0) || (check_phone_number(phone_input, length_of_input, phone_number) == 0))
         {
             //removes newline character from name and prints person's name and phone number
             name[strlen(name)-1] = '\0';
@@ -97,33 +82,33 @@ void print_all_contacts(char str[])
 }
 
 
-int check_phone_number(char* phone_input, int input_length, char* phone_number, int flag)
+int check_phone_number(char* phone_input, int input_length, char* phone_number)
 {
     int number_length = strlen(phone_number);
     int j = -1;
 
+    //variable which indicates success of iteration of the cycle
+    int pass;
+
     //iterate over every digit in phone input
     for (int i = 0; i < input_length; i++)
     {
+        //sets variable to unsuccessfull state
+        pass = 1;
+
         //iterate over every digit in phone number, starting from the next digit, where was last equality
-        for ( ; j < number_length; j++)
+        for (j= j+1; j < number_length; j++)
         {
             //checks if digit from the phone input was equal to digit in phone number and sets pass variable to successfull state
             if (phone_input[i] == phone_number[j])
             {
-                j++;                
+                pass = 0;
                 break;
-            }
-
-            if (flag == 0)
-            {
-                j -= i;
-                i = 0;
             }
         }
 
         //checks pass variable to check if this iteration of cycle was successfull 
-        if (j == number_length)
+        if (pass == 1)
         {
             return 1;
         }
@@ -131,7 +116,7 @@ int check_phone_number(char* phone_input, int input_length, char* phone_number, 
     return 0;
 }
 
- int check_name(char* phone_input, int input_length, char* name, int flag)
+ int check_name(char* phone_input, int input_length, char* name)
 {
     int name_length = strlen(name);
     int pass;
@@ -141,11 +126,11 @@ int check_phone_number(char* phone_input, int input_length, char* phone_number, 
     for (int i = 0; i < input_length; i++)
     {
         pass = 1;
+        int index_to_letter = phone_input[i] - '0';
 
         //iterate over every character in name, starting from the next character, where was last equality
         for ( ; j < name_length; j++)
         {
-            int index_to_letter = phone_input[i] - '0';
             //iterate over every character in two-dimensional array
             for (int k = 0; k < 4; k++)
             {
@@ -162,12 +147,6 @@ int check_phone_number(char* phone_input, int input_length, char* phone_number, 
             {
                 break;
             }
-            
-            if (flag == 0)
-            {
-                j -= i;
-                i = 0;
-            }
         }
 
         //checks pass variable to check if this iteration of cycle was successfull 
@@ -179,4 +158,3 @@ int check_phone_number(char* phone_input, int input_length, char* phone_number, 
 
     return 0;
 } 
-
