@@ -22,6 +22,11 @@ int main(int argc, char* argv[])
     char name[MAX_NUMBER_IN_LINE];
     char phone_number[MAX_NUMBER_IN_LINE];
 
+    //indicator of standard behavior of the program
+    int flag = 0;
+    //stores phone input in a phone_input variable
+    char* phone_input = argv[1];
+
     // checks if there is no phone input
     if (argc == 1)
     {
@@ -29,24 +34,72 @@ int main(int argc, char* argv[])
         print_all_contacts(name);
         return 0;
     }
-    
-    //indicator of standard behavior of the program
-    int flag = 0;
-    //stores phone input in a phone_input variable
-    char* phone_input = argv[1];
 
+    //checks if there is only one argument to programm
+    else if (argc == 2)
+    {
+        int length_input = strlen(argv[1]);
 
-    //checks if there are 3 arguments
-    if (argc == 3)
+        //checks if input is a number and returns error if it is not
+        for (int i = 0; i < length_input; i++)
+        {
+            if (isdigit(argv[1][i]) == 0)
+            {
+                fprintf(stderr, "argument is not a number\n");
+                return 1;
+            }
+        }
+    }
+
+    //checks if there are phone input and one additional argument
+    else if (argc == 3)
     {
         //checks if first argument is "-s"
         if (strcmp(argv[1], "-s") == 0)
         {
             //switches behaviour to searching for cuted sequences of characters
             flag = 1;
+
+            int length_input = strlen(argv[2]); 
+
+            //checks if input is a number and returns error if it is not
+            for (int i = 0; i < length_input; i++)
+            {
+                if (isdigit(argv[2][i]) == 0)
+                {
+                    fprintf( stderr, "argument is not a number\n");
+                    return 1;
+                }
+            }
             phone_input = argv[2];
         }
+        //checks if second argument is "-s"
+        else if(strcmp(argv[2], "-s") == 0)
+        {
+            //switches behaviour to searching for cuted sequences of characters
+            flag = 1;
+
+            int length_input = strlen(argv[1]);
+
+            //checks if input is a number and returns error if it is not
+            for (int i = 0; i < length_input; i++)
+            {
+                if (isdigit(argv[1][i]) == 0)
+                {
+                    fprintf( stderr, "argument is not a number\n");
+                    return 1;
+                }
+            }
+        }
     }
+
+    //if there is more than 3 arguments returns error
+    else 
+    {
+        fprintf( stderr, "too many arguments\n");
+        return 1;
+    }
+
 
     //finds length of phone input
     int length_of_input = strlen(phone_input);
@@ -74,7 +127,7 @@ int main(int argc, char* argv[])
     if (person_counter == 0)
     {
         printf("Not found\n");
-        return 1;
+        return 0;
     }
 
     return 0;
