@@ -4,41 +4,26 @@
 #include <math.h> // sqrtf
 #include <limits.h> // INT_MAX
 
-typedef struct obj_t
+int main(void)
 {
-    int id;
-    int x;
-}
-obj_t;
+    const int arr_size = 8;
+    int arr[] = {1, 5, 11, 53, 28, 2, 4, 48};
 
-typedef struct list
-{
-    int id;
-    obj_t* obj;
-}
-list;
+    int c1, c2;
+    int max = 0;
 
-void init_list(list** l)
-{
-    *l = (list*) malloc(sizeof(list));
-    (*l)->obj = (obj_t*) malloc(sizeof(obj_t));
-}
-
-int main(int argc, char *argv[])
-{
-    list** lists = malloc(sizeof(list*) * 4);
-
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < arr_size; i++)
     {
-        init_list(&lists[i]);
+        for (int j = i+1; j < arr_size; j++)
+        {
+            if (arr[i] * arr[j] > max)
+            {
+                c1 = i;
+                c2 = j;
+                max = arr[i] * arr[j];
+            }
+        }
     }
 
-    for (int j = 0; j < 4; j++)
-    {
-        lists[j]->obj->id = j;
-    }
-
-    printf("%d\n", lists[2]->obj->id);
-
-    free(lists);
+    printf("first index: %d\nsecond index: %d\n", c1, c2);
 }
