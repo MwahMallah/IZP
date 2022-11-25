@@ -1,0 +1,22 @@
+{
+    int len_string = strlen(string);
+    int len_substring = strlen(substring);
+
+    for (int i = 0; i < len_string; i++)
+    {
+        for (int j = 0; j < len_substring; j++)
+        {
+            if (string[i+j] != substring[j])
+            {
+                break;
+            }
+
+            if (substring[j] == '\0')
+            {
+                return i;
+            }
+        }
+    }
+
+    return -1;
+}

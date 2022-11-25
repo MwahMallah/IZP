@@ -4,45 +4,41 @@
 #include <math.h> // sqrtf
 #include <limits.h> // INT_MAX
 
-#define dint(i) printf(" - " __FILE__ ":%u: " #i " = %d\n", __LINE__, i)
-
-struct obj_t {
-    int id;
-    float x;
-    float y;
-};
-
-struct cluster_t {
-    int size;
-    int capacity;
-    struct obj_t *obj;
-};
-
-void init_cluster(struct cluster_t *c, int cap)
+typedef struct obj_t
 {
-    assert(c != NULL);
-    assert(cap >= 0);
+    int id;
+    int x;
+}
+obj_t;
 
-    // TODO
-    c->capacity = cap;
-    c->obj = malloc(sizeof(struct obj_t) * cap);
-    
-    if (c->obj == NULL)
-    {
-        c->capacity = 0;
-    }
+typedef struct list
+{
+    int id;
+    obj_t* obj;
+}
+list;
 
-    c->obj[0].id = 2;
-    printf("%d\n", c->obj[0].id);
+void init_list(list** l)
+{
+    *l = (list*) malloc(sizeof(list));
+    (*l)->obj = (obj_t*) malloc(sizeof(obj_t));
 }
 
 int main(int argc, char *argv[])
 {
-    struct cluster_t *clusters;
+    list** lists = malloc(sizeof(list*) * 4);
 
-    // TODO
-    clusters = malloc(sizeof(struct cluster_t));
+    for (int i = 0; i < 4; i++)
+    {
+        init_list(&lists[i]);
+    }
 
-    init_cluster(clusters, 2);
-    printf("%d\n", clusters->capacity);
+    for (int j = 0; j < 4; j++)
+    {
+        lists[j]->obj->id = j;
+    }
+
+    printf("%d\n", lists[2]->obj->id);
+
+    free(lists);
 }

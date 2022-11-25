@@ -85,7 +85,8 @@ void init_cluster(struct cluster_t *c, int cap)
 
     // TODO
     c->capacity = cap;
-    c->obj = malloc(sizeof(struct obj_t) * cap);
+    c->size = cap;
+    c->obj = malloc(sizeof(struct obj_t));
 
     if (c->obj == NULL)
     {
@@ -99,9 +100,11 @@ void init_cluster(struct cluster_t *c, int cap)
 void clear_cluster(struct cluster_t *c)
 {
     // TODO
+
     free(c->obj);
     c->obj = NULL;
-    free(c);
+    c->capacity = 0;
+    c->size = 0;
 }
 
 /// Chunk of cluster objects. Value recommended for reallocation.
@@ -257,6 +260,44 @@ int load_clusters(char *filename, struct cluster_t **arr)
     assert(arr != NULL);
 
     // TODO
+ 
+    FILE* f = fopen(filename, "r");
+
+    if (f == NULL)
+    {
+        printf("can't open the file\n");
+        arr = NULL;
+    }
+
+    int num_of_clusters;
+    fscanf(f, "count=%d", &num_of_clusters);
+    
+    (*arr) = (struct cluster_t *) malloc(sizeof(struct cluster_t) * num_of_clusters);
+
+
+    for (int i = 0; i < num_of_clusters; i++)
+    {
+        int id;
+        float x, y;
+
+        int check = fscanf(f, "%d %f %f", &id, &x, &y);
+
+        init_cluster(&(*arr)[i], 1);
+
+        if (check < 3)
+        {
+            printf("Wrong format of input file\n");
+            return -1;
+        }
+
+        (*arr)[i].obj->x = x;
+        (*arr)[i].obj->y = y;
+        (*arr)[i].obj->id = id;
+    }
+   
+    fclose(f);
+
+    return num_of_clusters;
 }
 
 /*
@@ -278,26 +319,46 @@ int main(int argc, char *argv[])
     struct cluster_t *clusters;
 
     // TODO
-    if (argc != 2)
+    if (argc != 3)
     {
         printf("Usage: ./cluster FILE [N]\n");
         fprintf(stderr, "Wrong number of arguments\n");
         return 1;
     }
 
-    int number_clusters = atoi(argv[1]);
-    clusters = malloc(sizeof(struct cluster_t)*number_clusters);
+    int num_of_clusters = atoi(argv[2]);
+    char* filename = argv[1];
 
-    for (int i = 0; i < number_clusters; i++)
+    int num_of_objects = load_clusters(filename, &clusters);
+
+    if (num_of_objects == -1)
     {
-        init_cluster(&clusters[i], 3);
+            for (int i =0; i <num_of_objects; i++)
+        {
+            clear_cluster(&clusters[i]);
+        }
+
+        free(clusters);
+        return -1;
     }
 
-    printf("%d\n", clusters[0].capacity);
+    if (num_of_clusters >= num_of_objects)
+    {
+        print_clusters(clusters, num_of_objects);
+    }
 
-    for (int i =0; i<number_clusters; i++)
+    else if (num_of_clusters < num_of_objects) 
+    {
+        
+    }
+
+    for (int i = 0; i <num_of_objects; i++)
     {
         clear_cluster(&clusters[i]);
     }
 
+    free(clusters);
+
+    clusters = NULL;
+    return 0;
 }
