@@ -1,9 +1,3 @@
-/**
- * Kostra programu pro 2. projekt IZP 2022/23
- *
- * Jednoducha shlukova analyza: 2D nejblizsi soused.
- * Single linkage
- */
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -86,7 +80,7 @@ void init_cluster(struct cluster_t *c, int cap)
     // TODO
     c->capacity = cap;
     c->size = cap;
-    c->obj = malloc(sizeof(struct obj_t) * cap);
+    c->obj = malloc(sizeof(struct obj_t));
 
     if (c->obj == NULL)
     {
@@ -94,15 +88,23 @@ void init_cluster(struct cluster_t *c, int cap)
     }
 }
 
+
+
+
 /*
  Odstraneni vsech objektu shluku a inicializace na prazdny shluk.
  */
 void clear_cluster(struct cluster_t *c)
 {
     // TODO
+    if (c == NULL) {
+        return;
+    }
+    if( c->obj != NULL) {
+        free(c->obj);
+        c->obj = NULL;
 
-    free(c->obj);
-    c->obj = NULL;
+    }
     c->capacity = 0;
     c->size = 0;
 }
@@ -141,13 +143,14 @@ struct cluster_t *resize_cluster(struct cluster_t *c, int new_cap)
 void append_cluster(struct cluster_t *c, struct obj_t obj)
 {
     // TODO
-    if (c->size + 1 > c->capacity)
+    int new_cap = c->capacity + CLUSTER_CHUNK;
+    if(c->capacity < c->size + 1)
     {
-        resize_cluster(c, c->capacity + CLUSTER_CHUNK);
+        resize_cluster(c, new_cap);
     }
 
     c->obj[c->size] = obj;
-    c->size++;    
+    c->size++;
 }
 
 /*
@@ -166,11 +169,11 @@ void merge_clusters(struct cluster_t *c1, struct cluster_t *c2)
     assert(c2 != NULL);
 
     // TODO
-
-    for (int i = 0; i < c2->size; i++)
+    for(int i = 0; i < c2->size; i++)
     {
         append_cluster(c1, c2->obj[i]);
     }
+
     sort_cluster(c1);
 }
 
@@ -196,6 +199,7 @@ int remove_cluster(struct cluster_t *carr, int narr, int idx)
     }
 
     return narr-1;
+
 }
 
 /*
@@ -207,10 +211,11 @@ float obj_distance(struct obj_t *o1, struct obj_t *o2)
     assert(o2 != NULL);
 
     // TODO
-    float x_dist = o1->x - o2->x;
-    float y_dist = o1->y - o2->y;
+    float x3 = o2->x - o1->x;
+    float y3 = o2->y - o1->y;
+    return sqrtf(x3*x3 + y3*y3);
 
-    return sqrtf(x_dist*x_dist + y_dist*y_dist);
+    
 }
 
 /*
@@ -224,22 +229,22 @@ float cluster_distance(struct cluster_t *c1, struct cluster_t *c2)
     assert(c2->size > 0);
 
     // TODO
-    float min = 1000000.0; 
-    float dist;
-
+    float distance;
+        
+    float min = obj_distance(&c1->obj[0], &c2->obj[0]);
+    
     for (int i = 0; i < c1->size; i++)
     {
         for (int j = 0; j < c2->size; j++)
         {
-            dist = obj_distance(&c1->obj[i], &c2->obj[j]);
+            distance = obj_distance(&c1->obj[i], &c2->obj[j]);
 
-            if (dist < min)
+            if (distance < min)
             {
-                min = dist;
+                min = distance;
             }
         }
     }
-
     return min;
 
 }
@@ -255,23 +260,21 @@ void find_neighbours(struct cluster_t *carr, int narr, int *c1, int *c2)
     assert(narr > 0);
 
     // TODO
-    float min = 1000000.0; 
-    float dist;
-    
-    for (int i = 0; i < narr; i++)
+    float distance;
+    float min = cluster_distance(&carr[0], &carr[1]);
+
+    for (int i = 1; i < narr; i++)
     {
         for (int j = i + 1; j < narr; j++)
         {
-            dist = cluster_distance(&carr[i], &carr[j]) ;
-
-            if (dist < min)
+            distance = cluster_distance(&carr[i], &carr[j]);
+            if(distance < min)
             {
                 *c1 = i;
                 *c2 = j;
-
-                min = dist;
             }
         }
+        
     }
 }
 
@@ -321,44 +324,32 @@ int load_clusters(char *filename, struct cluster_t **arr)
     assert(arr != NULL);
 
     // TODO
- 
-    FILE* f = fopen(filename, "r");
 
-    if (f == NULL)
-    {
-        printf("can't open the file\n");
-        arr = NULL;
-    }
+    FILE* file = fopen(filename, "r");
 
-    int num_of_clusters;
-    fscanf(f, "count=%d", &num_of_clusters);
-    
-    (*arr) = (struct cluster_t *) malloc(sizeof(struct cluster_t) * num_of_clusters);
+    int count;
 
+    fscanf(file, "count=%d", &count);
 
-    for (int i = 0; i < num_of_clusters; i++)
+    *arr = malloc(sizeof(struct cluster_t) * count);
+
+    for (int i = 0; i < count; i++)
     {
         int id;
         float x, y;
 
-        int check = fscanf(f, "%d %f %f", &id, &x, &y);
-
+        fscanf(file, "%d %f %f", &id, &x, &y);
+        
         init_cluster(&(*arr)[i], 1);
 
-        if (check < 3)
-        {
-            printf("Wrong format of input file\n");
-            return -1;
-        }
-
+        (*arr)[i].obj->id = id;
         (*arr)[i].obj->x = x;
         (*arr)[i].obj->y = y;
-        (*arr)[i].obj->id = id;
     }
-   
-    fclose(f);
 
-    return num_of_clusters;
+    fclose(file);
+
+    return count;
 }
 
 /*
@@ -382,43 +373,36 @@ int main(int argc, char *argv[])
     // TODO
     if (argc != 3)
     {
-        printf("Usage: ./cluster FILE [N]\n");
-        fprintf(stderr, "Wrong number of arguments\n");
+        printf("Wrong number of arguments\n");
         return 1;
     }
 
-    int num_of_clusters = atoi(argv[2]);
     char* filename = argv[1];
+    int number_clusters = atoi(argv[2]); 
 
-    int num_of_input_obj = load_clusters(filename, &clusters);
+    int count = load_clusters(filename, &clusters);
 
-    if (num_of_input_obj == -1)
+    if (number_clusters > count)
     {
-        for (int i = 0; i < num_of_input_obj; i++)
-        {
-            clear_cluster(&clusters[i]);
-        }
-
-        free(clusters);
-        return -1;
+        print_clusters(clusters, count);
     }
 
-    if (num_of_clusters < num_of_input_obj) 
+    else if (number_clusters < count)
     {
-        int c1;
-        int c2;
+        int i;
+        int j;
 
-        while (num_of_input_obj != num_of_clusters)
+        while (count != number_clusters)
         {
-            find_neighbours(clusters, num_of_input_obj, &c1, &c2);
-            merge_clusters(&clusters[c1], &clusters[c2]);
-            num_of_input_obj = remove_cluster(clusters, num_of_input_obj, c2);
+            find_neighbours(clusters, count, &i, &j);
+            merge_clusters(&clusters[i], &clusters[j]);
+            count = remove_cluster(clusters, count, j);
         }
-    }
 
-    print_clusters(clusters, num_of_input_obj);
+        print_clusters(clusters, count);
+    }    
 
-    for (int i = 0; i <num_of_input_obj; i++)
+    for (int i = 0; i <count; i++)
     {
         clear_cluster(&clusters[i]);
     }
@@ -426,5 +410,7 @@ int main(int argc, char *argv[])
     free(clusters);
 
     clusters = NULL;
+
     return 0;
 }
+
