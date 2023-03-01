@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
-#define N 120
+#define N 10000
 
 
 int main(void)
@@ -12,7 +12,7 @@ int main(void)
         a[i] = true;
     }
 
-    for (int i = 2; i < N; i++)
+    for (int i = 2; i < 100; i++)
     {
         if (a[i])
         {
